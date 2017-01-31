@@ -1,0 +1,97 @@
+<?php
+    $day         = date('j');
+    $month       = date('m');
+    $year        = date('Y');
+    $daysInMonth = get_date_format("t", $year, $month);
+    /* Get the name of the week days */
+    $blank       = get_date_format('w', $year, $month);
+    $start       = mktime(0, 0, 0, $month, $day, $year);
+    $last        = date('t', $start);
+    $last_day    = get_date_format('w', $year, $month, $last);
+    $after1week  = get_date_format("j", $year, $month, ($day+7));
+
+    function get_date_format($format, $year, $month, $day = "1")
+    {
+        return date($format, mktime(0, 0, 0, $month, $day, $year));
+    }
+?>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<script>
+$(document).ready(function() {
+  $(".date_cell").click(function(){
+//  $(document).on("click", ".date_cell", function() {
+    var day = $(this).attr("id");
+    alert(day);
+  });
+});
+</script>
+<form name="mainfrm" id="mainfrm" action="" method="post" enctype="multipart/form-data">
+
+  <table>
+  <tr>
+    <td colspan="7"><?php echo $year ?>&nbsp;<?php echo $month ?></td>
+  </tr>
+  <tr>
+    <th class="sun">Sun</th>
+    <th>Mon</th>
+    <th>Tue</th>
+    <th>Wed</th>
+    <th>Thu</th>
+    <th>Fri</th>
+    <th class="sat">Sat</th>
+  </tr>
+  <tr>
+    <?php $sun = 0; ?>
+    <?php for ($i=0; $i<$blank; $i++): ?>
+    <td></td>
+    <?php $sun = 1; ?>
+    <?php endfor; ?>
+    <?php for ($i=1; $i<=$daysInMonth; $i++): ?>
+    <?php $bold = "normal"; ?>
+    <?php if ($i == $after1week) { ?>
+        <?php $bold = "bold"; ?>
+    <?php } ?>
+    <?php if (($i + $blank) % 7 == 0) { ?>
+        <?php $class = "sat"; ?>
+        <?php } elseif ($sun == 0) { $sun = 1; ?>
+        <?php $class = "sun"; ?>
+        <?php } else { ?>
+        <?php $class ="" ?>
+    <?php } ?>
+    <td id="<?php echo $i ?>" class="date_cell <?php echo $class; ?>" style = "font-weight: <?php echo $bold; ?>"><?php echo $i ?></td>
+    <?php if (($i + $blank) % 7 == 0): $sun = 0; ?>
+  </tr>
+  <tr>
+    <?php endif; ?>
+    <?php endfor; ?>
+    <?php for ($i=6; $i>$last_day; $i--): ?>
+    <td></td>
+    <?php endfor; ?>
+  </tr>
+  </table>
+</form>
+</body>
+</html>
+  <style>
+  table th, td{
+    border: 1px solid;
+    text-align: center;
+    padding: 10px;
+  }
+  table th {
+    background: #EEEEEE;
+  }
+  .sat
+  {
+    color:blue;
+  }
+  .sun
+  {
+    color:red;
+  }
+  </style>
